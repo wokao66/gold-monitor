@@ -40,7 +40,7 @@ def main():
     # 1. 读取上次记录的价格
     if os.path.exists(LOG_FILE):
         with open(LOG_FILE, "r") as f:
-            last_price = float(f.read().strip())
+            last_price = float(f.read().strip().replace(',', ''))
     else:
         # 第一次运行，记录当前价格并退出
         with open(LOG_FILE, "w") as f:
