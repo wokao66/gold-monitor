@@ -2,7 +2,7 @@ import requests
 import os
 
 # 配置
-INTERVAL = 50  # 变动阈值
+INTERVAL = 20  # 变动阈值
 LOG_FILE = "last_price.txt"
 
 def get_gold_price():
