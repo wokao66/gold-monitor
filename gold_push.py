@@ -18,10 +18,15 @@ def get_gold_price():
 
 def send_wechat(price, trend, diff):
     app_token = os.environ.get("WXP_APP_TOKEN")
-    my_uid = os.environ.get("WXP_UID")
+    # 注意这里：我们从 Secrets 读取 Topic ID
+    topic_id = os.environ.get("WXP_TOPIC_ID")
     
+    if not app_token or not topic_id:
+        print("配置缺失")
+        return
+
     direction = "📈 上涨" if trend == "up" else "📉 下跌"
-    content = f"🔔 黄金节点变动提醒\n\n变动方向: {direction}\n当前价格: ${price}\n变动幅度: ${diff}\n\n[查看行情](https://cn.investing.com/currencies/xau-usd)"
+    content = f"🔔 黄金节点提醒\n\n方向: {direction}\n当前价格: ${price}\n变动幅度: ${diff}"
     
     url = "https://wxpusher.zjiecode.com/api/send/message"
     data = {
@@ -29,9 +34,11 @@ def send_wechat(price, trend, diff):
         "content": content,
         "summary": f"金价{direction}: ${price}",
         "contentType": 1,
-        "uids": [my_uid]
+        "topicIds": [int(topic_id)]  # 注意：这里改成了 topicIds，且必须是数字列表
     }
-    requests.post(url, json=data)
+    
+    res = requests.post(url, json=data)
+    print("全员推送结果:", res.text)
 
 def main():
     current_price = get_gold_price()
